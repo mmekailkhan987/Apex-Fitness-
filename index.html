@@ -89,21 +89,41 @@
         background: #FF0000;
       }
       
+      /* Chat widget animations */
+      @keyframes pulse-button {
+        0%, 100% {
+          box-shadow: 
+            0 8px 30px rgba(255, 0, 0, 0.5),
+            0 0 0 0 rgba(255, 0, 0, 0.4);
+        }
+        50% {
+          box-shadow: 
+            0 8px 30px rgba(255, 0, 0, 0.7),
+            0 0 0 10px rgba(255, 0, 0, 0);
+        }
+      }
+      
+      #chat-toggle:hover {
+        transform: scale(1.1) !important;
+        box-shadow: 0 12px 40px rgba(255, 0, 0, 0.7) !important;
+      }
+      
       /* Mobile responsive chat */
       @media (max-width: 640px) {
         #n8n-chat-container {
-          bottom: 80px !important;
+          bottom: 84px !important;
           right: 10px !important;
           left: 10px !important;
           width: auto !important;
           height: 70vh !important;
-          max-height: 500px !important;
+          max-height: 550px !important;
         }
         #chat-toggle {
           bottom: 10px !important;
           right: 10px !important;
           width: 56px !important;
           height: 56px !important;
+          font-size: 24px !important;
         }
       }
     </style>
@@ -122,65 +142,108 @@
   <body>
     <div id="root"></div>
 
-    <!-- Chat Toggle Button -->
+    <!-- Chat Toggle Button - APEX Themed -->
     <button
       id="chat-toggle"
       style="
         position: fixed;
         bottom: 20px;
         right: 20px;
-        width: 60px;
-        height: 60px;
+        width: 64px;
+        height: 64px;
         border-radius: 50%;
         background: linear-gradient(135deg, #FF0000, #FF4500);
-        border: none;
+        border: 3px solid rgba(255, 255, 255, 0.1);
         cursor: pointer;
-        z-index: 9999;
-        box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
-        transition: transform 0.2s, box-shadow 0.2s;
+        z-index: 10000;
+        box-shadow: 
+          0 8px 30px rgba(255, 0, 0, 0.5),
+          0 0 0 0 rgba(255, 0, 0, 0.4);
+        transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 28px;
+        font-size: 32px;
+        animation: pulse-button 2s infinite;
       "
-      onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 6px 30px rgba(255, 0, 0, 0.6)';"
-      onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 20px rgba(255, 0, 0, 0.4)';"
       onclick="toggleChat()"
-      aria-label="Toggle chat"
+      aria-label="Toggle APEX AI Chat"
     >
       💬
     </button>
 
-    <!-- Chat Widget Container -->
+    <!-- Chat Widget Container - APEX Themed -->
     <div
       id="n8n-chat-container"
       style="
         position: fixed;
-        bottom: 90px;
+        bottom: 94px;
         right: 20px;
         width: 400px;
         height: 600px;
         max-width: calc(100vw - 40px);
         max-height: calc(100vh - 120px);
-        z-index: 9998;
+        z-index: 9999;
         border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        box-shadow: 
+          0 20px 60px rgba(255, 0, 0, 0.4),
+          0 0 0 2px rgba(255, 0, 0, 0.3);
         background: #0f0f0f;
+        border: 2px solid rgba(255, 0, 0, 0.3);
         opacity: 0;
         transform: translateY(20px) scale(0.95);
         pointer-events: none;
-        transition: opacity 0.3s, transform 0.3s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       "
     >
+      <!-- Header Bar -->
+      <div style="
+        background: linear-gradient(135deg, #FF0000, #FF4500);
+        padding: 16px 20px;
+        color: white;
+        font-weight: 700;
+        font-family: 'Montserrat', sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 16px;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      ">
+        <span>💪 APEX AI COACH</span>
+        <button 
+          onclick="toggleChat()"
+          style="
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            font-weight: bold;
+          "
+          onmouseover="this.style.background='rgba(255,255,255,0.3)'"
+          onmouseout="this.style.background='rgba(255,255,255,0.2)'"
+          aria-label="Close chat"
+        >×</button>
+      </div>
+
+      <!-- Chat Iframe -->
       <iframe
         id="n8n-chat-iframe"
         src=""
         width="100%"
-        height="100%"
-        style="border:none; display:block;"
+        height="calc(100% - 60px)"
+        style="border: none; display: block; background: #000;"
         allow="microphone; camera"
-        title="Chat support"
+        title="APEX Fitness AI Chat"
       ></iframe>
     </div>
 
@@ -204,24 +267,20 @@
           container.style.transform = 'translateY(0) scale(1)';
           container.style.pointerEvents = 'auto';
           button.innerHTML = '✕';
-          button.style.fontSize = '32px';
+          button.style.fontSize = '36px';
         } else {
           container.style.opacity = '0';
           container.style.transform = 'translateY(20px) scale(0.95)';
           container.style.pointerEvents = 'none';
           button.innerHTML = '💬';
-          button.style.fontSize = '28px';
+          button.style.fontSize = '32px';
         }
       }
       
-      // Optional: Close chat when clicking outside
-      document.addEventListener('click', function(event) {
-        const container = document.getElementById('n8n-chat-container');
-        const button = document.getElementById('chat-toggle');
-        
-        if (chatOpen && !container.contains(event.target) && !button.contains(event.target)) {
-          // Uncomment next line if you want chat to close when clicking outside
-          // toggleChat();
+      // Optional: Close chat when pressing Escape key
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && chatOpen) {
+          toggleChat();
         }
       });
     </script>
