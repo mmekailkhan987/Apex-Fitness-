@@ -88,8 +88,26 @@
       ::-webkit-scrollbar-thumb:hover {
         background: #FF0000;
       }
+      
+      /* Mobile responsive chat */
+      @media (max-width: 640px) {
+        #n8n-chat-container {
+          bottom: 80px !important;
+          right: 10px !important;
+          left: 10px !important;
+          width: auto !important;
+          height: 70vh !important;
+          max-height: 500px !important;
+        }
+        #chat-toggle {
+          bottom: 10px !important;
+          right: 10px !important;
+          width: 56px !important;
+          height: 56px !important;
+        }
+      }
     </style>
-  <script type="importmap">
+    <script type="importmap">
 {
   "imports": {
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
@@ -100,33 +118,114 @@
   }
 }
 </script>
-</head>
+  </head>
   <body>
-    <div id="root">
-      <!-- n8n Chatbot Widget -->
-<div
-  id="n8n-chat"
-  style="
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 380px;
-    height: 520px;
-    z-index: 9999;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-  "
->
-  <iframe
-    src="https://opraxai.app.n8n.cloud/webhook/b833199b-6342-4682-88ad-f17c76f55320/chat"
-    width="100%"
-    height="100%"
-    style="border:none;"
-    loading="lazy"
-  ></iframe>
-</div>
+    <div id="root"></div>
+
+    <!-- Chat Toggle Button -->
+    <button
+      id="chat-toggle"
+      style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #FF0000, #FF4500);
+        border: none;
+        cursor: pointer;
+        z-index: 9999;
+        box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+      "
+      onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 6px 30px rgba(255, 0, 0, 0.6)';"
+      onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 20px rgba(255, 0, 0, 0.4)';"
+      onclick="toggleChat()"
+      aria-label="Toggle chat"
+    >
+      💬
+    </button>
+
+    <!-- Chat Widget Container -->
+    <div
+      id="n8n-chat-container"
+      style="
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 400px;
+        height: 600px;
+        max-width: calc(100vw - 40px);
+        max-height: calc(100vh - 120px);
+        z-index: 9998;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        background: #0f0f0f;
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+        pointer-events: none;
+        transition: opacity 0.3s, transform 0.3s;
+      "
+    >
+      <iframe
+        id="n8n-chat-iframe"
+        src=""
+        width="100%"
+        height="100%"
+        style="border:none; display:block;"
+        allow="microphone; camera"
+        title="Chat support"
+      ></iframe>
     </div>
+
+    <script>
+      let chatOpen = false;
+      const chatUrl = 'https://opraxai.app.n8n.cloud/webhook/b833199b-6342-4682-88ad-f17c76f55320/chat';
+      
+      function toggleChat() {
+        const container = document.getElementById('n8n-chat-container');
+        const iframe = document.getElementById('n8n-chat-iframe');
+        const button = document.getElementById('chat-toggle');
+        
+        chatOpen = !chatOpen;
+        
+        if (chatOpen) {
+          // Load iframe only when opened (better performance)
+          if (!iframe.src) {
+            iframe.src = chatUrl;
+          }
+          container.style.opacity = '1';
+          container.style.transform = 'translateY(0) scale(1)';
+          container.style.pointerEvents = 'auto';
+          button.innerHTML = '✕';
+          button.style.fontSize = '32px';
+        } else {
+          container.style.opacity = '0';
+          container.style.transform = 'translateY(20px) scale(0.95)';
+          container.style.pointerEvents = 'none';
+          button.innerHTML = '💬';
+          button.style.fontSize = '28px';
+        }
+      }
+      
+      // Optional: Close chat when clicking outside
+      document.addEventListener('click', function(event) {
+        const container = document.getElementById('n8n-chat-container');
+        const button = document.getElementById('chat-toggle');
+        
+        if (chatOpen && !container.contains(event.target) && !button.contains(event.target)) {
+          // Uncomment next line if you want chat to close when clicking outside
+          // toggleChat();
+        }
+      });
+    </script>
+
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
