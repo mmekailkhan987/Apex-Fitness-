@@ -74,7 +74,6 @@
       .text-glow {
         text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
       }
-      /* Hide scrollbar for clean UI */
       ::-webkit-scrollbar {
         width: 8px;
       }
@@ -88,45 +87,11 @@
       ::-webkit-scrollbar-thumb:hover {
         background: #FF0000;
       }
-      
-      /* Chat widget animations */
-      @keyframes pulse-button {
-        0%, 100% {
-          box-shadow: 
-            0 8px 30px rgba(255, 0, 0, 0.5),
-            0 0 0 0 rgba(255, 0, 0, 0.4);
-        }
-        50% {
-          box-shadow: 
-            0 8px 30px rgba(255, 0, 0, 0.7),
-            0 0 0 10px rgba(255, 0, 0, 0);
-        }
-      }
-      
-      #chat-toggle:hover {
-        transform: scale(1.1) !important;
-        box-shadow: 0 12px 40px rgba(255, 0, 0, 0.7) !important;
-      }
-      
-      /* Mobile responsive chat */
-      @media (max-width: 640px) {
-        #n8n-chat-container {
-          bottom: 84px !important;
-          right: 10px !important;
-          left: 10px !important;
-          width: auto !important;
-          height: 70vh !important;
-          max-height: 550px !important;
-        }
-        #chat-toggle {
-          bottom: 10px !important;
-          right: 10px !important;
-          width: 56px !important;
-          height: 56px !important;
-          font-size: 24px !important;
-        }
-      }
     </style>
+    
+    <!-- n8n Chat Widget CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+    
     <script type="importmap">
 {
   "imports": {
@@ -142,145 +107,28 @@
   <body>
     <div id="root"></div>
 
-    <!-- Chat Toggle Button - APEX Themed -->
-    <button
-      id="chat-toggle"
-      style="
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #FF0000, #FF4500);
-        border: 3px solid rgba(255, 255, 255, 0.1);
-        cursor: pointer;
-        z-index: 10000;
-        box-shadow: 
-          0 8px 30px rgba(255, 0, 0, 0.5),
-          0 0 0 0 rgba(255, 0, 0, 0.4);
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 32px;
-        animation: pulse-button 2s infinite;
-      "
-      onclick="toggleChat()"
-      aria-label="Toggle APEX AI Chat"
-    >
-      💬
-    </button>
+    <!-- n8n Chat Widget using CDN method -->
+    <script type="module">
+      import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
 
-    <!-- Chat Widget Container - APEX Themed -->
-    <div
-      id="n8n-chat-container"
-      style="
-        position: fixed;
-        bottom: 94px;
-        right: 20px;
-        width: 400px;
-        height: 600px;
-        max-width: calc(100vw - 40px);
-        max-height: calc(100vh - 120px);
-        z-index: 9999;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 
-          0 20px 60px rgba(255, 0, 0, 0.4),
-          0 0 0 2px rgba(255, 0, 0, 0.3);
-        background: #0f0f0f;
-        border: 2px solid rgba(255, 0, 0, 0.3);
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-        pointer-events: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      "
-    >
-      <!-- Header Bar -->
-      <div style="
-        background: linear-gradient(135deg, #FF0000, #FF4500);
-        padding: 16px 20px;
-        color: white;
-        font-weight: 700;
-        font-family: 'Montserrat', sans-serif;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 16px;
-        letter-spacing: 0.5px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      ">
-        <span>💪 APEX AI COACH</span>
-        <button 
-          onclick="toggleChat()"
-          style="
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-            font-weight: bold;
-          "
-          onmouseover="this.style.background='rgba(255,255,255,0.3)'"
-          onmouseout="this.style.background='rgba(255,255,255,0.2)'"
-          aria-label="Close chat"
-        >×</button>
-      </div>
-
-      <!-- Chat Iframe -->
-      <iframe
-        id="n8n-chat-iframe"
-        src=""
-        width="100%"
-        height="calc(100% - 60px)"
-        style="border: none; display: block; background: #000;"
-        allow="microphone; camera"
-        title="APEX Fitness AI Chat"
-      ></iframe>
-    </div>
-
-    <script>
-      let chatOpen = false;
-      const chatUrl = 'https://opraxai.app.n8n.cloud/webhook/b833199b-6342-4682-88ad-f17c76f55320/chat';
-      
-      function toggleChat() {
-        const container = document.getElementById('n8n-chat-container');
-        const iframe = document.getElementById('n8n-chat-iframe');
-        const button = document.getElementById('chat-toggle');
-        
-        chatOpen = !chatOpen;
-        
-        if (chatOpen) {
-          // Load iframe only when opened (better performance)
-          if (!iframe.src) {
-            iframe.src = chatUrl;
+      createChat({
+        webhookUrl: 'https://opraxai.app.n8n.cloud/webhook/b833199b-6342-4682-88ad-f17c76f55320/chat',
+        initialMessages: [
+          'Hey there! 💪',
+          'I\'m your APEX AI Coach. How can I help you achieve your fitness goals today?'
+        ],
+        i18n: {
+          en: {
+            title: '💪 APEX AI COACH',
+            subtitle: 'Your Personal Fitness Assistant',
+            footer: '',
+            getStarted: 'Start Chat',
+            inputPlaceholder: 'Ask me anything about fitness...'
           }
-          container.style.opacity = '1';
-          container.style.transform = 'translateY(0) scale(1)';
-          container.style.pointerEvents = 'auto';
-          button.innerHTML = '✕';
-          button.style.fontSize = '36px';
-        } else {
-          container.style.opacity = '0';
-          container.style.transform = 'translateY(20px) scale(0.95)';
-          container.style.pointerEvents = 'none';
-          button.innerHTML = '💬';
-          button.style.fontSize = '32px';
-        }
-      }
-      
-      // Optional: Close chat when pressing Escape key
-      document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && chatOpen) {
-          toggleChat();
+        },
+        chatWindowConfig: {
+          welcomeMessage: 'Welcome to APEX Fitness! How can I assist you today?',
+          showWelcomeScreen: false
         }
       });
     </script>
