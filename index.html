@@ -102,7 +102,31 @@
 </script>
 </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- n8n Chatbot Widget -->
+<div
+  id="n8n-chat"
+  style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 380px;
+    height: 520px;
+    z-index: 9999;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  "
+>
+  <iframe
+    src="https://opraxai.app.n8n.cloud/webhook/b833199b-6342-4682-88ad-f17c76f55320/chat"
+    width="100%"
+    height="100%"
+    style="border:none;"
+    loading="lazy"
+  ></iframe>
+</div>
+    </div>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
